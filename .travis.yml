@@ -1,0 +1,36 @@
+language: python
+
+dist: trusty
+
+sudo: false
+
+python:
+  - "2.7"
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-4.8
+      - g++-4.8
+      - libgmp10
+      - libgmp-dev
+      - openssl
+
+install:
+  # Install PBC
+  - wget https://crypto.stanford.edu/pbc/files/pbc-0.5.14.tar.gz
+  - tar -zxvf pbc-0.5.14.tar.gz
+  - cd pbc-0.5.14
+  - ./configure --prefix=$HOME/.local
+  - make
+  - make install
+  - cd ..
+  - export LIBRARY_PATH=$HOME/.local/lib
+  - export C_INCLUDE_PATH=$HOME/.local/include
+  # Install Charm-Crypto
+  - pip install -r requirements.txt
+
+script:
+  - python grouping.py
